@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 22, 2018 at 05:50 PM
+-- Generation Time: Mar 23, 2018 at 05:40 PM
 -- Server version: 10.1.31-MariaDB
 -- PHP Version: 5.6.34
 
@@ -32,16 +32,17 @@ CREATE TABLE `login` (
   `name` varchar(30) NOT NULL,
   `email` varchar(50) NOT NULL,
   `mobile` int(15) NOT NULL,
-  `emailVer` tinyint(1) NOT NULL DEFAULT '0'
+  `emailVer` tinyint(1) NOT NULL DEFAULT '0',
+  `password` varchar(30) NOT NULL,
+  `emailauth` bigint(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `login`
 --
 
-INSERT INTO `login` (`name`, `email`, `mobile`, `emailVer`) VALUES
-('ujjwal', 'readyforssc@gmail.com', 1234579, 1),
-('Sourabh Goayl', 'readyforgate@gmail.com', 789456132, 1);
+INSERT INTO `login` (`name`, `email`, `mobile`, `emailVer`, `password`, `emailauth`) VALUES
+('ujjwal', 'readyforssc@gmail.com', 123456, 1, 'ujjwal', 711023);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

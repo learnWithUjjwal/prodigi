@@ -46,8 +46,10 @@ app.get('/login', (req, res)=>{
 })
 
 app.post('/register', (req, res)=>{
+	var auth = Math.floor((Math.random()*1000000)+1);
 	var stm = "insert into login SET ?";
 	var val = {
+		emailauth:auth,
 		name:req.body.name,
 		email:req.body.email,
 		mobile:req.body.mobile,
@@ -63,12 +65,12 @@ app.post('/register', (req, res)=>{
 	})
 
 
-
+	
 	var mailOptions = {
 	from:"readyforgate@gmail.com",
 	to:req.body.email,
 	subject:"Hello From NodeJS",
-	text:"http://localhost:8080/ver"
+	text:`http://localhost:8080/ver?email=${req.body.email}&auth=${auth}`
 
 }
 
@@ -112,15 +114,19 @@ app.post('/loginreg', (req, res)=>{
 	})
 	
 })
+var emailver = require('./modules/registration.js')
 app.get('/ver', (req, res)=>{
-	var stm = "update login SET emailVer = 1";
-	con.query(stm, (err, res)=>{
-		if (err) console.log(err)
-			else{
-				console.log("Email Verfified");
-			}
-	})
-	res.end("Email Verified");
+	emailver.emailVerification(req, res);
+
+	// var stm = "update login SET emailVer = 1";
+	// con.query(stm, (err, res)=>{
+	// 	if (err) console.log(err)
+	// 		else{
+	// 			console.log("Email Verfified");
+	// 		}
+	// })
+	// res.end("Email Verified");
+
 
 })
 
