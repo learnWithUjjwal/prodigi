@@ -1,0 +1,28 @@
+{
+  "name": "prodigi",
+  "version": "1.0.0",
+  "description": "test project",
+  "main": "app.js",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.3",
+    "http": "^0.0.0",
+    "mysql": "^2.15.0",
+    "nexmo": "^2.2.0",
+    "nodemailer": "^4.6.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/learnWithUjjwal/prodigi.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/learnWithUjjwal/prodigi/issues"
+  },
+  "homepage": "https://github.com/learnWithUjjwal/prodigi#readme"
+}

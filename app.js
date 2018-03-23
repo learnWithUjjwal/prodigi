@@ -86,14 +86,15 @@ app.post('/register', (req, res)=>{
 
 app.post('/loginreg', (req, res)=>{
 	email=req.body.email;
+	password = req.body.password;
 	console.log(email);
-	stm=`select * from login where email = '${email}'`;
+	stm=`select * from login where email = '${email}' and password = '${password}'`;
 	con.query(stm, (err, data)=>{
 		if (err) console.log(err)
 			else{
 				console.log(data)
 				if(!data[0]){
-					res.write("Email is not registered");
+					res.write("Email is not registered or password is incorrect");
 					res.end();
 				}
 				else{
@@ -103,7 +104,7 @@ app.post('/loginreg', (req, res)=>{
 						res.end();
 					}
 					else{
-						res.write("Congrats ${data[0].name} you have succesfully login");
+						res.write(`Congrats ${data[0].name} you have succesfully login`);
 						res.end();
 					}
 				}
@@ -126,6 +127,20 @@ app.get('/ver', (req, res)=>{
 app.get('/test', (req, res)=>{
 	res.end("hello");
 })
+
+var nexmo = require('nexmo');
+var nex = new nexmo({
+	apiKey:"bab98f86",
+	apiSecret:"S8LipEVqbO6oCF7x"
+});
+
+nex.message.sendSms('13852332002', '447520615120', "Hi", (err, info)=>{
+	if (err) console.log(err);
+	else{
+		console.log("msg. send")
+	}
+});
+
 
 const port = process.env.PORT || '8080';
 app.set('port', port);
