@@ -32,4 +32,14 @@ function emailVerification(req, res){
 	res.end("Email Verified");
 }
 
+
+
+
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+// EXPORTS
 module.exports.emailVerification = emailVerification;

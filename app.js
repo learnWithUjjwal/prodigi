@@ -10,13 +10,13 @@ var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//DATABASE CONFIGURATION
 var db_config = {
   host: 'localhost',
   user:'root',
     password: '',
-    database: 'test'
-    
+    database: 'test'    
 };
 
 var con = mysql.createConnection(db_config);
@@ -26,6 +26,8 @@ con.connect((err)=>{
 		console.log("conneected")
 	}
 })
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Mail configuration
 
 var transporter = mail.createTransport({
 	service:"gmail",
@@ -34,7 +36,7 @@ var transporter = mail.createTransport({
 		pass:"gatecracked"
 	}
 });
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 app.get('/signup', (req, res)=>{
@@ -45,6 +47,8 @@ app.get('/login', (req, res)=>{
 	res.sendFile(__dirname + '/login.html');
 })
 
+/////////////////////////////////////////////////////////////////////////////////////////////
+//Route handler for first time register
 app.post('/register', (req, res)=>{
 	var auth = Math.floor((Math.random()*1000000)+1);
 	var stm = "insert into login SET ?";
@@ -85,6 +89,8 @@ app.post('/register', (req, res)=>{
 })
 
 })
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Root handler for after login verification
 
 app.post('/loginreg', (req, res)=>{
 	email=req.body.email;
@@ -106,7 +112,7 @@ app.post('/loginreg', (req, res)=>{
 						res.end();
 					}
 					else{
-						res.write(`Congrats ${data[0].name} you have succesfully login`);
+						res.send("profile.html");
 						res.end();
 					}
 				}
@@ -117,37 +123,69 @@ app.post('/loginreg', (req, res)=>{
 var emailver = require('./modules/registration.js')
 app.get('/ver', (req, res)=>{
 	emailver.emailVerification(req, res);
-
-	// var stm = "update login SET emailVer = 1";
-	// con.query(stm, (err, res)=>{
-	// 	if (err) console.log(err)
-	// 		else{
-	// 			console.log("Email Verfified");
-	// 		}
-	// })
-	// res.end("Email Verified");
-
-
+})
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+app.get('/profilecomp', (req, res)=>{
+	res.sendFile(__dirname + '/profile.html');
 })
 
-app.get('/test', (req, res)=>{
-	res.end("hello");
-})
-
-var nexmo = require('nexmo');
-var nex = new nexmo({
-	apiKey:"bab98f86",
-	apiSecret:"S8LipEVqbO6oCF7x"
-});
-
-nex.message.sendSms('13852332002', '447520615120', "Hi", (err, info)=>{
-	if (err) console.log(err);
-	else{
-		console.log("msg. send")
+app.post('/profilecomp', (req, res)=>{
+	if(req.body.other == ''){
+		var data={
+			sscid:req.body.sscid
+		}
+		var stm = "update login SET ? where"
+		con.query(stm, req.body, (err, data)=>{
+			if (err) console.log(err)
+				else{
+					res.write("Profile Completed");
+				}
+		})
 	}
-});
+	else{
+// 		SELECT *
+// FROM Person
+// ORDER BY PersonID DESC
+// LIMIT 1
 
+var stm = "select iid from institute order by iid DESC limit 1";
+con.query(stm, (err, data)=>{
+	if (err) console.log(err)
+		else{
+			var key = JSON.stringify(data[0].iid);
+			console.log(key);
+			var newkey = key.slice(2,key.length);
+			console.log(newkey);
+			var intkey = parseInt(newkey);
+			intkey++;
+			console.log(intkey);
+			var a = 's'+intkey;
+			console.log(a);
+			var dataobj = {
+				iid:a,
+				name:req.body.other
+				}
+			var stm = "insert into institute SET ?";
+			con.query(stm, dataobj, (err, result)=>{
+				if (err) console.log(err);
+				else{
+					req.body.sscid = a;
+					var stm = "insert into login SET ?";
+					con.query(stm, req.body, (err, data)=>{
+						if (err) console.log(err)
+							else{
+								res.write("Profile Completed");
+							}
+					})
+				}
+			})
+		}
+})
+	}
+})
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//CREATING SERVER 
 const port = process.env.PORT || '8080';
 app.set('port', port);
 
