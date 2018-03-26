@@ -51,8 +51,23 @@ app.get('/login', (req, res)=>{
 //Route handler for first time register
 app.post('/register', (req, res)=>{
 	var auth = Math.floor((Math.random()*1000000)+1);
-	var stm = "insert into login SET ?";
+	var stm = "select uid from login order by uid DESC limit 1";
+con.query(stm, (err, data)=>{
+	if (err) console.log(err)
+		else{
+			var key = JSON.stringify(data[0].uid);
+			console.log(key);
+			var newkey = key.slice(2,key.length);
+			console.log(newkey);
+			var intkey = parseInt(newkey);
+			intkey++;
+			console.log(intkey);
+			var a = 'u'+intkey;
+			console.log(a);
+
+			var stm = "insert into login SET ?";
 	var val = {
+		uid:a,
 		emailauth:auth,
 		name:req.body.name,
 		email:req.body.email,
@@ -67,7 +82,10 @@ app.post('/register', (req, res)=>{
 			console.log("success");
 		}
 	})
+		}
+		})
 
+	
 
 	
 	var mailOptions = {
@@ -112,8 +130,9 @@ app.post('/loginreg', (req, res)=>{
 						res.end();
 					}
 					else{
-						res.send("profile.html");
-						res.end();
+						console.log("login successful");
+						res.sendFile(__dirname + '/profile.html');
+						
 					}
 				}
 			}
@@ -139,6 +158,7 @@ app.post('/profilecomp', (req, res)=>{
 			if (err) console.log(err)
 				else{
 					res.write("Profile Completed");
+					res.end();
 				}
 		})
 	}
@@ -169,14 +189,17 @@ con.query(stm, (err, data)=>{
 			con.query(stm, dataobj, (err, result)=>{
 				if (err) console.log(err);
 				else{
+					console.log("profile completed");
 					req.body.sscid = a;
-					var stm = "insert into login SET ?";
-					con.query(stm, req.body, (err, data)=>{
-						if (err) console.log(err)
-							else{
-								res.write("Profile Completed");
-							}
-					})
+					res.write("Profile Completed");
+					res.end();
+					// var stm = "insert into login SET ?";
+					// con.query(stm, req.body, (err, data)=>{
+					// 	if (err) console.log(err)
+					// 		else{
+					// 			res.write("Profile Completed");
+					// 		}
+					// })
 				}
 			})
 		}
