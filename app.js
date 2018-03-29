@@ -1,8 +1,15 @@
+global.window = {
+  addEventListener: function(){return undefined;},
+  removeEventListener: function(){return undefined;}
+};
+
 var http = require('http');
 var mail = require('nodemailer');
 var express = require("express");
 var mysql = require("mysql");
 var bodyParser = require("body-parser");
+var firebase = require("firebase");
+var firebaseui = require("firebaseui");
 
 var app = express();
 
@@ -26,6 +33,10 @@ con.connect((err)=>{
 		console.log("conneected")
 	}
 })
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Mail configuration
 
@@ -37,6 +48,24 @@ var transporter = mail.createTransport({
 	}
 });
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// OTP VERIFICATION USING FIREBASE
+
+
+
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyB6xmft0t6PNQfWxuC5iL3h9xS7gvBmF10",
+    authDomain: "fbms-5ead2.firebaseapp.com",
+    databaseURL: "https://fbms-5ead2.firebaseio.com",
+    projectId: "fbms-5ead2",
+    storageBucket: "",
+    messagingSenderId: "200219049520"
+  };
+  firebase.initializeApp(config);
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 app.get('/signup', (req, res)=>{
@@ -207,6 +236,48 @@ con.query(stm, (err, data)=>{
 	}
 })
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+ 
+//Registeration authemtification using firebase
+
+app.post('/register1', (req, res) => {
+	const email = req.body.email;
+	const pass  = req.body.password;
+	const auth = firebase.auth();
+	const promise = auth.createUserWithEmailAndPassword(email, pass);
+	promise
+	.then(e=>{
+		console.log('inside then');
+		if (e) console.log(e);
+	})
+	.catch( e => console.log(e.message));
+
+})
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Testing for phone authentication
+
+app.get('test1', (req, res) => {
+res.sendFile(__dirname + '/test1.html');
+})
+
+//Login for user
+
+app.post('/loginreg1', (req, res) => {
+	const email = req.body.email;
+	const pass  = req.body.password;
+	const auth = firebase.auth();
+	const promise = auth.signInWithEmailAndPassword(email, pass);
+	promise
+	.then(e=>{
+		console.log('inside then');
+		if (e) console.log(e);
+	})
+	.catch( e => console.log(e.message));
+
+})
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //CREATING SERVER 
 const port = process.env.PORT || '8080';
